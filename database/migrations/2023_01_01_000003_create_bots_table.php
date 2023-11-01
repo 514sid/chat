@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('bots', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('telegram_id')->unique();
             $table->string('name', 64);
             $table->string('username', 32);
             $table->string('description', 512)->nullable();
             $table->string('short_description', 120)->nullable();
-            $table->string('token')->unique()->index();
+            $table->string('token')->unique();
             $table->bigInteger('offset')->default(0);
 			$table->timestamp('updates_retrieved_at')->nullable();
             $table->timestamps();

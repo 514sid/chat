@@ -24,6 +24,7 @@ class BotTest extends TestCase
 	{
 		$expectedColumns = [
 			'id',
+			'telegram_id',
 			'name',
 			'username',
 			'description',
@@ -48,9 +49,10 @@ class BotTest extends TestCase
 			'token'                => 'test-token',
 			'offset'               => 100,
 			'username'             => FakeUsername::generate(),
+			'telegram_id'		   => 1234123,
 			'description'          => 'Test bot description',
 			'short_description'    => 'Test bot short description',
-			'updates_retrieved_at' => Carbon::now()
+			'updates_retrieved_at' => Carbon::now(),
 		];
 
 		$bot = Bot::create($botData);
@@ -60,6 +62,7 @@ class BotTest extends TestCase
 		$this->assertEquals($botData['token'], $bot->token);
 		$this->assertEquals($botData['offset'], $bot->offset);
 		$this->assertEquals($botData['username'], $bot->username);
+		$this->assertEquals($botData['telegram_id'], $bot->telegram_id);
 		$this->assertEquals($botData['description'], $bot->description);
 		$this->assertEquals($botData['short_description'], $bot->short_description);
 		$this->assertNotEmpty($bot->updates_retrieved_at);

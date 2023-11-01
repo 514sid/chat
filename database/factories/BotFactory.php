@@ -16,6 +16,7 @@ class BotFactory extends Factory
         return [
 			'name'                 => Str::random(30),
 			'token'                => Str::random(45),
+			'telegram_id'          => fake()->randomNumber(7, true),
 			'offset'               => fake()->randomNumber(7, true),
 			'username'             => FakeUsername::generate(),
 			'description'          => Str::random(250),

@@ -18,7 +18,8 @@ class Bot extends Model
         'token',
         'offset',
         'username',
-        'description',
+		'telegram_id',
+		'description',
         'short_description',
 		'updates_retrieved_at',
     ];
