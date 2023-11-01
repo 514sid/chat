@@ -7,6 +7,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class BotResource extends JsonResource
 {
+	public static $wrap = null;
+
     public function toArray(Request $request): array
     {
         return [
