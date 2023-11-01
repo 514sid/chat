@@ -23,6 +23,10 @@ class Bot extends Model
 		'updates_retrieved_at',
     ];
 
+	protected $hidden = [
+        'token',
+    ];
+
 	protected $casts = [
         'updates_retrieved_at' => 'datetime',
     ];
