@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Chat;
+use App\Enums\BotStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,7 @@ class Bot extends Model
 	protected $fillable = [
         'name',
         'token',
+		'status',
         'offset',
         'username',
 		'telegram_id',
@@ -29,7 +31,8 @@ class Bot extends Model
     ];
 
 	protected $casts = [
-        'updates_retrieved_at' => 'datetime',
+		'status'               => BotStatus::class,
+		'updates_retrieved_at' => 'datetime',
     ];
 
 	public function chats(): HasMany
