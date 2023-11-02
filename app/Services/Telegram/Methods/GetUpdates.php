@@ -12,7 +12,8 @@ trait GetUpdates
 	{
 		try {
 			$response = $this->sendGetRequest('getUpdates', [
-				'offset' => $offset
+				'offset'  => $offset,
+				'timeout' => 30
 			]);
 
 			return $this->processUpdates($response);

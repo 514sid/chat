@@ -13,11 +13,9 @@ class TelegramApi
 	use GetUpdates, GetMe;
 
 	private ?string $token;
-	private int $timeout;
 
-	public function __construct(?int $timeout = 30) {
-		$this->token   = null;
-		$this->timeout = $timeout;
+	public function __construct() {
+		$this->token = null;
 	}
 
 	public function setToken(string $token)
@@ -38,8 +36,7 @@ class TelegramApi
 	
 		try {
 			$response = $client->get($this->getUrl() . $endpoint, [
-				'timeout' => $this->timeout,
-				'query'   => $queryParameters,
+				'query' => $queryParameters,
 			]);
 	
 			return json_decode($response->getBody()->getContents())->result;
