@@ -2,34 +2,36 @@
 
 namespace App\Actions;
 
-use Exception;
 use App\Models\Bot;
-use Telegram\Bot\Api;
+use App\Enums\BotStatus;
 use App\Data\CreateBotData;
-use App\Http\Resources\BotResource;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\BotResource;
+use App\Services\Telegram\TelegramApi;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Telegram\Types\TelegramUser;
 use Illuminate\Validation\ValidationException;
-use Telegram\Bot\Objects\User as TelegramUser;
 
 class CreateBot
 {
-	private Api $api;
+	private TelegramApi $api;
 
 	public function __invoke(
 		CreateBotData $data,
 	): BotResource | ValidationException | JsonResponse {
-		$this->api = app(Api::class);
+		$this->api = app(TelegramApi::class);
 
-		$response = $this->getTelegramBotInfo($data->getToken());
+		$botInfo = $this->getTelegramBotInfo($data->getToken());
 
-		if (!$response) {
-			return response()->json(['error' => 'Something went wrong'], 500);
+		if (!$botInfo) {
+			throw ValidationException::withMessages([
+				'token' => 'Invalid token',
+			]);
 		}
 
-		$this->validateReponse($response);
+		$this->validateReponse($botInfo);
 
-		$botData = $this->prepareBotData($response, $data->getToken());
+		$botData = $this->prepareBotData($botInfo, $data->getToken());
 
 		$bot = $this->createBot($botData);
 
@@ -38,24 +40,14 @@ class CreateBot
 
 	private function getTelegramBotInfo(
 		string $token
-	): ?TelegramUser {
-		try {
-			$this->api->setAccessToken($token);
+	) {
+		$this->api->setToken($token);
 
-			return $this->api->getMe();
-		} catch (Exception $e) {
-			if ($e->getCode() === 401 || $e->getCode() === 404) {
-				throw ValidationException::withMessages([
-					'token' => 'Invalid token',
-				]);
-			}
-		}
-
-		return null;
+		return $this->api->getMe();
 	}
 
 	private function validateReponse(
-		TelegramUser $response
+		TelegramUser $botInfo
 	): void {
 		$rules = [
 			'id' => [
@@ -67,7 +59,9 @@ class CreateBot
 			'id.unique' => 'Bot is already added',
 		];
 
-		$validator = Validator::make($response->toArray(), $rules, $messages);
+		$validator = Validator::make([
+			'id' => $botInfo->getId()
+		], $rules, $messages);
 
 		if ($validator->fails()) {
 			throw new ValidationException($validator);
@@ -79,10 +73,11 @@ class CreateBot
 		string $token,
 	): array {
 		return [
-			'telegram_id' => $bot->id,
-			'name'        => $bot->firstName,
-			'username'    => $bot->username,
+			'telegram_id' => $bot->getId(),
+			'name'        => $bot->getFirstName(),
+			'username'    => $bot->getUsername(),
 			'token'       => $token,
+			'status'	  => BotStatus::ACTIVE
 		];
 	}
 

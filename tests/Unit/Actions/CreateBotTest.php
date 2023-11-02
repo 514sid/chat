@@ -2,17 +2,18 @@
 
 namespace Tests\Unit\Actions;
 
-use Exception;
+use stdClass;
 use Mockery as m;
 use App\Models\Bot;
 use Tests\TestCase;
-use Telegram\Bot\Api;
+use App\Enums\BotStatus;
 use App\Actions\CreateBot;
 use Mockery\MockInterface;
 use App\Data\CreateBotData;
 use App\Http\Resources\BotResource;
+use App\Services\Telegram\TelegramApi;
+use App\Services\Telegram\Types\TelegramUser;
 use Illuminate\Validation\ValidationException;
-use Telegram\Bot\Objects\User as TelegramUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateBotTest extends TestCase
@@ -32,14 +33,16 @@ class CreateBotTest extends TestCase
 			token: 'token'
 		);
 
-		$telegramUser = new TelegramUser([
-			'id'         => 12345,
-			'first_name' => 'BotName',
-			'username'   => 'username_bot',
-		]);
+		$userAttributes = new stdClass();
+		$userAttributes->id         = 12345;
+		$userAttributes->is_bot     = true;
+		$userAttributes->first_name = 'BotName';
+		$userAttributes->username   = 'username_bot';
+
+		$telegramUser = new TelegramUser($userAttributes);
 
 		$this->partialMock(
-			Api::class, function (MockInterface $mock) use ($telegramUser) {
+			TelegramApi::class, function (MockInterface $mock) use ($telegramUser) {
 				$mock->shouldReceive('getMe')->andReturn($telegramUser);
 			}
 		);
@@ -57,12 +60,8 @@ class CreateBotTest extends TestCase
 		);
 
 		$this->partialMock(
-			Api::class, function (MockInterface $mock) {
-				$mock->shouldReceive('getMe')->andThrow(new Exception(json_encode([
-					'ok'          => false,
-					'error_code'  => 401,
-					'description' => 'Unauthorized'
-				]), 401));
+			TelegramApi::class, function (MockInterface $mock) {
+				$mock->shouldReceive('getMe')->andReturn(null);
 			}
 		);
 
@@ -78,14 +77,16 @@ class CreateBotTest extends TestCase
 			token: 'token'
 		);
 
-		$telegramUser = new TelegramUser([
-			'id'         => 12345,
-			'first_name' => 'BotName',
-			'username'   => 'username_bot',
-		]);
+		$userAttributes = new stdClass();
+		$userAttributes->id         = 12345;
+		$userAttributes->is_bot     = true;
+		$userAttributes->first_name = 'BotName';
+		$userAttributes->username   = 'username_bot';
+
+		$telegramUser = new TelegramUser($userAttributes);
 
 		$this->partialMock(
-			Api::class, function (MockInterface $mock) use ($telegramUser) {
+			TelegramApi::class, function (MockInterface $mock) use ($telegramUser) {
 				$mock->shouldReceive('getMe')->andReturn($telegramUser);
 			}
 		);
@@ -95,6 +96,7 @@ class CreateBotTest extends TestCase
 			'name'        => 'BotName',
 			'username'    => 'username_bot',
 			'token'       => 'token',
+			'status'	  => BotStatus::ACTIVE,
 		]);
 
 		$this->expectException(ValidationException::class);
