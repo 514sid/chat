@@ -10,7 +10,9 @@ export function App() {
 			<RouterProvider
 				router={router}
 			/>
-			<ReactQueryDevtools initialIsOpen={false} />
+			<ReactQueryDevtools
+				initialIsOpen={false}
+				buttonPosition="bottom-left"/>
 		</QueryClientProvider>
 	)
 }
