@@ -5,6 +5,7 @@ namespace Tests\Unit\Models;
 use Carbon\Carbon;
 use App\Models\Bot;
 use Tests\TestCase;
+use App\Enums\BotStatus;
 use App\Helpers\FakeUsername;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,6 +31,7 @@ class BotTest extends TestCase
 			'description',
 			'short_description',
 			'token',
+			'status',
 			'offset',
 			'updates_retrieved_at',
 			'created_at',
@@ -46,6 +48,7 @@ class BotTest extends TestCase
 	{
 		$botData = [
 			'name'                 => 'Test Bot',
+			'status'			   => BotStatus::ACTIVE,
 			'token'                => 'test-token',
 			'offset'               => 100,
 			'username'             => FakeUsername::generate(),
