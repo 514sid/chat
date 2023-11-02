@@ -34,6 +34,11 @@ class Chat extends Model
 		'status' => ChatStatus::class,
 	];
 
+	public function latestUpdate()
+	{
+		return $this->hasOne(ChatHistoryItem::class)->orderBy('id', 'desc')->latest();
+	}
+
 	public function history(): HasMany
 	{
 		return $this->hasMany(ChatHistoryItem::class);
