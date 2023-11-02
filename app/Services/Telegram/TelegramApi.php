@@ -38,12 +38,14 @@ class TelegramApi
 			$response = $client->get($this->getUrl() . $endpoint, [
 				'query' => $queryParameters,
 			]);
-	
+
 			return json_decode($response->getBody()->getContents())->result;
 		} catch (GuzzleException $e) {
 			if ($e->getCode() === 401 || $e->getCode() === 404) {
 				throw new InvalidTelegramTokenException;
 			}
+
+			return null;
 		}
 	}
 }
