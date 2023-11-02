@@ -14,9 +14,11 @@ class GetBotUpdates implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $tries = 1;
+
     public int $bot_id;
 
-	public int $uniqueFor = 30;
+	public int $uniqueFor = 35;
 
 	public function uniqueId(): string
     {
