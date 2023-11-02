@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\BotStatus;
 use Illuminate\Support\Str;
 use App\Helpers\FakeUsername;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -15,6 +16,7 @@ class BotFactory extends Factory
     {
         return [
 			'name'                 => Str::random(30),
+			'status'			   => BotStatus::ACTIVE,
 			'token'                => Str::random(45),
 			'telegram_id'          => fake()->randomNumber(7, true),
 			'offset'               => fake()->randomNumber(7, true),
