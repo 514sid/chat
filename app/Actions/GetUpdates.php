@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use Carbon\Carbon;
 use App\Models\Bot;
 use App\Jobs\HandleBotUpdate;
 use Illuminate\Support\Collection;
@@ -41,8 +42,11 @@ class GetUpdates
 
 		if ($updates->count() > 0) {
 			$this->updateOffset($updates);
-			$this->bot->save();
 		}
+
+		$this->bot->updates_retrieved_at = Carbon::now();
+		
+		$this->bot->save();
 	}
 
 	private function dispatchHandleBotUpdateJobs(
