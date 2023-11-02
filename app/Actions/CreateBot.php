@@ -7,15 +7,20 @@ use App\Models\Bot;
 use Telegram\Bot\Api;
 use App\Data\CreateBotData;
 use App\Http\Resources\BotResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Telegram\Bot\Objects\User as TelegramUser;
 
 class CreateBot
 {
+	private Api $api;
+
 	public function __invoke(
-		CreateBotData $data
-	): BotResource {
+		CreateBotData $data,
+	): BotResource | ValidationException | JsonResponse {
+		$this->api = app(Api::class);
+
 		$response = $this->getTelegramBotInfo($data->getToken());
 
 		if (!$response) {
@@ -35,12 +40,13 @@ class CreateBot
 		string $token
 	): ?TelegramUser {
 		try {
-			$telegram = new Api($token);
-			return $telegram->getMe();
+			$this->api->setAccessToken($token);
+
+			return $this->api->getMe();
 		} catch (Exception $e) {
-			if ($e->getCode() === 401) {
+			if ($e->getCode() === 401 || $e->getCode() === 404) {
 				throw ValidationException::withMessages([
-					'token' => 'Invalid token.',
+					'token' => 'Invalid token',
 				]);
 			}
 		}
@@ -48,33 +54,34 @@ class CreateBot
 		return null;
 	}
 
-	private function validateReponse(TelegramUser $response): void
-    {
-        $rules = [
-            'id' => [
+	private function validateReponse(
+		TelegramUser $response
+	): void {
+		$rules = [
+			'id' => [
 				'unique:bots,telegram_id'
 			],
-        ];
+		];
 
-        $messages = [
-            'id.unique' => 'Bot is already added.',
-        ];
+		$messages = [
+			'id.unique' => 'Bot is already added',
+		];
 
-        $validator = Validator::make($response->toArray(), $rules, $messages);
+		$validator = Validator::make($response->toArray(), $rules, $messages);
 
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-    }
+		if ($validator->fails()) {
+			throw new ValidationException($validator);
+		}
+	}
 
 	private function prepareBotData(
-		TelegramUser $response,
+		TelegramUser $bot,
 		string $token,
 	): array {
 		return [
-			'telegram_id' => $response->id,
-			'name'        => $response->firstName,
-			'username'    => $response->username,
+			'telegram_id' => $bot->id,
+			'name'        => $bot->firstName,
+			'username'    => $bot->username,
 			'token'       => $token,
 		];
 	}
