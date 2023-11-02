@@ -1,4 +1,4 @@
-import { Ping, Root } from "./pages";
+import { Home, Root } from "./pages";
 import { createBrowserRouter } from "react-router-dom"
 
 export const router = createBrowserRouter([
@@ -7,8 +7,8 @@ export const router = createBrowserRouter([
 		element: <Root />,
 		children: [
 			{
-				path: "ping",
-				element: <Ping />,
+				path: "",
+				element: <Home />,
 			},
 		],
 	},
