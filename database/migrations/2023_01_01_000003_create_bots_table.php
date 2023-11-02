@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description', 512)->nullable();
             $table->string('short_description', 120)->nullable();
             $table->string('token')->unique();
+            $table->string('status');
             $table->bigInteger('offset')->default(0);
 			$table->timestamp('updates_retrieved_at')->nullable();
             $table->timestamps();
