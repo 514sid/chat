@@ -1,27 +1,37 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
-import axios, { AxiosError } from "axios"
-// import { router } from "./router"
+import { isAxiosError } from "axios"
+import { router } from "./router"
+import { isUnauthorizedError } from "./helpers"
 
-const handleAxiosError = (error: AxiosError) => {
-	if (error.response && error.response.status === 401) {
+const handleError = (error: Error) => {
+	if (isUnauthorizedError(error)) {
 		queryClient.removeQueries()
-		// router.navigate("/login")
+		router.navigate("/login")
 	}
 }
 
 export const queryClient = new QueryClient({
-	queryCache: new QueryCache({
-		onError: (error) => {
-			if (axios.isAxiosError(error)) {
-				handleAxiosError(error as AxiosError)
-			}
+	defaultOptions: {
+		queries: {
+			// Custom retry policy by RodolfoSilva (https://github.com/RodolfoSilva)
+			// Source: https://github.com/TanStack/query/discussions/372#discussioncomment-6023276
+			retry: (failureCount, error) => {
+				if (failureCount > 3) {
+					return false
+				}
+
+				if (isAxiosError(error) && [400, 401, 403, 404].includes(error.response?.status || 0)) {
+					return false
+				}
+
+				return true
+			},
 		},
+	},
+	queryCache: new QueryCache({
+		onError: handleError
 	}),
 	mutationCache: new MutationCache({
-		onError: (error) => {
-			if (axios.isAxiosError(error)) {
-				handleAxiosError(error as AxiosError)
-			}
-		},
+		onError: handleError
 	})
 })

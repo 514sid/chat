@@ -1,5 +1,6 @@
-import { Home, Root } from "./pages";
+import { Home, Root, Chat, Login } from "./pages"
 import { createBrowserRouter } from "react-router-dom"
+import { Authenticated } from "./pages/middlewares"
 
 export const router = createBrowserRouter([
 	{
@@ -7,9 +8,25 @@ export const router = createBrowserRouter([
 		element: <Root />,
 		children: [
 			{
-				path: "",
-				element: <Home />,
+				element: <Authenticated />,
+				children: [
+					{
+						path: "",
+						element: <Home />,
+						children: [
+							{
+								path: "chat/:chat_id",
+								element: <Chat />,
+							}
+							
+						]
+					},
+				]
 			},
+			{
+				path: "login",
+				element: <Login />
+			}
 		],
 	},
 ])

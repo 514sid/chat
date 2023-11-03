@@ -23,12 +23,28 @@ export interface ChatHistoryItemResource {
 	item_type: ChatHistoryItemType;
 }
 
-export interface ChatCollectionResource {
+export interface ChatResource {
 	id: number;
 	status: ChatStatus
 	bot: BotResource;
 	first_name: string;
 	last_name: string | null;
+	created_at: string;
+	username: string | null;
+}
+
+export interface ChatCollectionResource extends Omit<ChatResource, "created_at"> {
 	latest_update: ChatHistoryItemResource;
 }
 
+export type UserRole = "root" | "user"
+
+export interface UserResource {
+	id: number;
+	username: string;
+	role: UserRole;
+}
+
+export interface Auth {
+	user: UserResource | null
+}
