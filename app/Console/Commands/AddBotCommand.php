@@ -6,25 +6,12 @@ use App\Actions\CreateBot;
 use App\Data\CreateBotData;
 use Illuminate\Console\Command;
 
-class AddBot extends Command
+class AddBotCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'bots:add';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Manually add a bot to your application by providing a bot token.';
+	protected $description = 'Manually add a bot to your application by providing a bot token';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(CreateBot $createBotAction)
     {
         $token = $this->ask('Enter the bot token:');
