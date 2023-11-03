@@ -9,4 +9,5 @@ const sendGetChatsRequest = async (): Promise<ChatCollectionResource[]> => {
 export const getChats = () => ({
 	queryKey: ["chats"],
 	queryFn: async () => await sendGetChatsRequest(),
+	refetchInterval: 3000,
 })
