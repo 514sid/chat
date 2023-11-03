@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\ChatHistoryItemResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ChatCollectionResource extends JsonResource
@@ -18,7 +19,7 @@ class ChatCollectionResource extends JsonResource
 			'status'        => $this->status,
 			'first_name'    => $this->first_name,
 			'last_name'     => $this->last_name,
-			'latest_update' => $this->latestUpdate,
+			'latest_update' => new ChatHistoryItemResource($this->latestUpdate),
 			'bot'           => new BotResource($this->bot),
 		];
     }
