@@ -7,10 +7,16 @@ use App\Http\Controllers\ChatController;
 use App\Http\Resources\UserResource;
 
 Route::get('/user', function (Request $request) {
-	return $request->user() ? new UserResource($request->user()) : null;
+	$user = $request->user() ? new UserResource($request->user()) : null;
+
+	return [
+		'user' => $user
+	];
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+	Route::get('/bots', [BotController::class, 'bots']);
+
 	Route::post('/bot', [BotController::class, 'create']);
 
 	Route::get('/chat/{chat}', [ChatController::class, 'chat']);

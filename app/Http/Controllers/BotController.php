@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\GetBots;
 use App\Actions\CreateBot;
+use App\Http\Requests\GetBotsRequest;
 use App\Http\Requests\CreateBotRequest;
-use App\Http\Resources\BotResource;
 
 class BotController extends Controller
 {
@@ -13,5 +14,12 @@ class BotController extends Controller
 		CreateBot $action
 	) {
 		return $action($request->toData());
+	}
+
+	public function bots(
+		GetBotsRequest $request,
+		GetBots $action
+	) {
+		return $action();
 	}
 }
