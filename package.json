@@ -8,6 +8,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@heroicons/react": "^2.0.18",
 		"@tanstack/react-query": "^5.4.3",
 		"@tanstack/react-query-devtools": "^5.4.3",
 		"dayjs": "^1.11.10",
