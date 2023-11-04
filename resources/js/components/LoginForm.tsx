@@ -1,8 +1,13 @@
 import { StringInput } from "@/components/inputs"
 import { BaseButton } from "@/components/buttons"
+import { useLoginMutation } from "@/api/mutations/authMutations"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { LoginData } from "@/types/types"
+import { useEffect } from "react"
+import { useLaravelValidationErrors } from "@/hooks"
 
 const CreateRootCommand = ({ isVisible }: { isVisible: boolean }) => {
-	if(isVisible) {
+	if (isVisible) {
 		return (
 			<div className="my-10">
 				<div className="text-sm text-center mb-2">
@@ -17,22 +22,45 @@ const CreateRootCommand = ({ isVisible }: { isVisible: boolean }) => {
 }
 
 export const LoginForm = () => {
+	const login = useLoginMutation()
+
+	const validationErrors = useLaravelValidationErrors<LoginData>(login.error)
+
+	const { register, handleSubmit, setError, formState: { errors } } = useForm<LoginData>()
+
+	const onSubmit: SubmitHandler<LoginData> = data => login.mutate(data)
+
+	useEffect(() => {
+		if(validationErrors) {
+			Object.keys(validationErrors).forEach((field) => {
+				setError(field as keyof LoginData, {
+					type: "manual",
+					message: validationErrors[field][0],
+				})
+			})
+		}
+	}, [validationErrors, setError])
+
 	return (
 		<div className="w-[336px]">
-			<div className="grid grid-cols-1 gap-5">
-				<StringInput
-					type="text"
-					placeholder="Username"
-				/>
-				<StringInput
-					type="password"
-					placeholder="Password"
-				/>
-				<BaseButton>
-					Continue
-				</BaseButton>
-			</div>
-			<CreateRootCommand isVisible={true}/>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<div className="grid grid-cols-1 gap-5">
+					<StringInput
+						type="text"
+						placeholder="Username"
+						{...register("username")}
+					/>
+					<StringInput
+						type="password"
+						placeholder="Password"
+						{...register("password")}
+					/>
+					<BaseButton>
+						Continue
+					</BaseButton>
+				</div>
+			</form>
+			<CreateRootCommand isVisible={true} />
 		</div>
 	)
 }
