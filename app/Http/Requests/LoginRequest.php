@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Data\LoginData;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
@@ -15,8 +16,22 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'exists:users,username'],
+            'username' => [
+				'required',
+				'string',
+				Rule::exists('users', 'username')
+			],
             'password' => 'required'
+        ];
+    }
+
+	public function messages(): array
+    {
+        return [
+			'username.required' => "Username is required",
+			'username.string'   => "Invalid username format",
+			'username.exists'   => "User with that username was not found",
+			'password.required' => "Password is required",
         ];
     }
 
