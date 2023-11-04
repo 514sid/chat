@@ -48,3 +48,20 @@ export interface UserResource {
 export interface Auth {
 	user: UserResource | null
 }
+
+export interface LoginData {
+	username: string;
+	password: string;
+}
+
+export type LaravelValidationErrors<T> = {
+	[K in keyof T]: string[];
+} & {
+	[key: string]: string[];
+};
+
+export interface LaravelValidationErrorData<T> {
+	message: string;
+	errors: LaravelValidationErrors<T>
+}
+

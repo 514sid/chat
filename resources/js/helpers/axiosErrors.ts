@@ -15,3 +15,11 @@ export const isUnauthorizedError = (error: Error): error is AxiosError => {
 
 	return false
 }
+
+export const isUnprocessableContentError = (error: Error): error is AxiosError => {
+	if (axios.isAxiosError(error)) {
+		return error.response?.status === 422
+	}
+
+	return false
+}
