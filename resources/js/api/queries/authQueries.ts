@@ -3,9 +3,7 @@ import axios from "axios"
 
 const sendGetCurrentUserRequest = async (): Promise<Auth> => {
 	const result = await axios.get("/api/user")
-	return {
-		user: result.data ?? null
-	}
+	return result.data
 }
 
 export const getCurrentUser = () => ({
