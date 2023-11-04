@@ -1,31 +1,40 @@
-import { Home, Root, Chat, Login } from "./pages"
+import { Home, Root, Chat, Login, AuthLayout } from "./pages"
 import { createBrowserRouter } from "react-router-dom"
 import { Authenticated } from "./pages/middlewares"
+import { NotFound } from "./pages/NotFound"
 
 export const router = createBrowserRouter([
 	{
-		path: "/",
 		element: <Root />,
 		children: [
 			{
 				element: <Authenticated />,
 				children: [
 					{
-						path: "",
-						element: <Home />,
+						element: <AuthLayout />,
 						children: [
 							{
-								path: "chat/:chat_id",
-								element: <Chat />,
-							}
-							
+								path: "",
+								element: <Home />,
+								children: [
+									{
+										path: "chat/:chat_id",
+										element: <Chat />,
+									}
+									
+								]
+							},
 						]
-					},
+					}
 				]
 			},
 			{
 				path: "login",
 				element: <Login />
+			},
+			{
+				path: "*",
+				element: <NotFound />
 			}
 		],
 	},
