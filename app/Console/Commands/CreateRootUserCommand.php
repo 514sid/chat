@@ -24,6 +24,9 @@ class CreateRootUserCommand extends Command
 
         if ($existingRootUser) {
             $this->info('Root user already exists. No need to create a new one.');
+			$this->newLine();
+            $this->info('If you forgot the root user\'s password, you can reset it by running:');
+            $this->info('php artisan root:reset');
             return;
         }
 
