@@ -1,26 +1,26 @@
-import { forwardRef } from "react"
+import { forwardRef, InputHTMLAttributes } from "react"
 
-type StringInputType = "text" | "password" | "email"
+type StringInputType = "text" | "password" | "email";
 
-interface ComponentProps {
-	placeholder?: string;
-	type: StringInputType;
+interface ComponentProps extends InputHTMLAttributes<HTMLInputElement> {
+	type?: StringInputType;
 }
 
 export const StringInput = forwardRef<HTMLInputElement, ComponentProps>(
 	(
 		{
-			placeholder = "",
-			type = "text"
+			type = "text",
+			...rest
 		},
 		ref
 	) => {
 		return (
 			<input
-				placeholder={placeholder}
 				ref={ref}
 				type={type}
 				className="h-12 px-3 block w-full border border-gray-200 rounded text-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+				{...rest}
 			/>
 		)
-	})
+	}
+)
