@@ -5,7 +5,6 @@ import { isUnauthorizedError } from "./helpers"
 
 const handleError = (error: Error) => {
 	if (isUnauthorizedError(error)) {
-		queryClient.removeQueries()
 		router.navigate("/login")
 	}
 }
@@ -20,7 +19,7 @@ export const queryClient = new QueryClient({
 					return false
 				}
 
-				if (isAxiosError(error) && [400, 401, 403, 404].includes(error.response?.status || 0)) {
+				if (isAxiosError(error) && [400, 403, 404].includes(error.response?.status || 0)) {
 					return false
 				}
 
