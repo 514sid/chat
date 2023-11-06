@@ -17,9 +17,11 @@ Route::get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
 	Route::get('/bots', [BotController::class, 'bots']);
 
-	Route::post('/bot', [BotController::class, 'create']);
+	Route::post('/bots', [BotController::class, 'create']);
 
 	Route::get('/chat/{chat}', [ChatController::class, 'chat']);
+
+	Route::get('/chat/{chat}/history', [ChatController::class, 'history']);
 
 	Route::get('/chats', [ChatController::class, 'chats']);
 });

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Chat;
 use App\Actions\GetChat;
 use App\Actions\GetChats;
+use App\Actions\GetChatHistory;
 use App\Http\Requests\GetChatRequest;
 use App\Http\Requests\GetChatsRequest;
+use App\Http\Requests\GetChatHistoryRequest;
 
 class ChatController extends Controller
 {
@@ -23,5 +25,13 @@ class ChatController extends Controller
 		GetChats $action
 	) {
 		return $action();
+	}
+
+	public function history(
+		GetChatHistoryRequest $request,
+		Chat $chat,
+		GetChatHistory $action
+	) {
+		return $action($chat);
 	}
 }
