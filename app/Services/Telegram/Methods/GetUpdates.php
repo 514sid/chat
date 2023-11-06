@@ -16,6 +16,10 @@ trait GetUpdates
 				'timeout' => 30
 			]);
 
+			if(!$response) {
+				return null;
+			}
+
 			return $this->processUpdates($response);
         } catch (InvalidTelegramTokenException $e) {
            return null;
@@ -25,17 +29,12 @@ trait GetUpdates
 	private function processUpdates(
 		array $updates
 	): Collection {
-		$count = count($updates);
 		$result = collect();
-		$index = 0;
 
-		if($count > 0) {
-			do {
-				$result->push(new TelegramUpdate($updates[$index]));
-				$index++;
-			} while ($index < $count);
-		}
+        foreach ($updates as $update) {
+            $result->push(new TelegramUpdate($update));
+        }
 
-		return $result;
+        return $result;
 	}
 }
